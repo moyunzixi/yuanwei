@@ -1,11 +1,4 @@
-# OS / editor
-.DS_Store
-Thumbs.db
-*.log
-
-# Node
+# test artifacts
 node_modules/
-
-# IDE
-.idea/
-.vscode/
+_smoke_test.js
+_out.txt
