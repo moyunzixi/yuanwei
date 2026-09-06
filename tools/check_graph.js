@@ -1,5 +1,5 @@
 // 检查所有节点的 next / choice.next / next_if / branch_if 引用都存在（e_ 开头为结局，允许）
-require('../web/js/data/scenes.js')
+require('../js/data/scenes.js')
 const s = globalThis.LS.scenes
 let bad = 0
 let refs = 0

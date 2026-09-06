@@ -1,14 +1,14 @@
 // 验证 web 版逻辑层（按浏览器加载顺序 require，Node 下挂到 globalThis.LS）
-require('../web/js/data/scenes.js')
-require('../web/js/data/characters.js')
-require('../web/js/data/endings.js')
-require('../web/js/data/report.js')
-require('../web/js/core/expr.js')
-require('../web/js/core/attrs.js')
-require('../web/js/core/pattern.js')
-require('../web/js/core/storage.js')
-require('../web/js/core/engine.js')
-require('../web/js/core/score.js')
+require('../js/data/scenes.js')
+require('../js/data/characters.js')
+require('../js/data/endings.js')
+require('../js/data/report.js')
+require('../js/core/expr.js')
+require('../js/core/attrs.js')
+require('../js/core/pattern.js')
+require('../js/core/storage.js')
+require('../js/core/engine.js')
+require('../js/core/score.js')
 
 const LS = globalThis.LS
 const { engine, score } = LS
