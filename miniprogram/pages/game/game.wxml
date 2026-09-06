@@ -1,0 +1,67 @@
+<view class="game">
+  <!-- 场景背景 -->
+  <image class="game__bg" src="{{bgUrl}}" mode="aspectFill"></image>
+  <view class="game__mask"></view>
+
+  <!-- 角色立绘 -->
+  <image
+    wx:if="{{charUrl}}"
+    class="game__char {{charShow ? 'game__char--in' : ''}}"
+    src="{{charUrl}}"
+    mode="aspectFit"
+  ></image>
+
+  <view class="game__layer" bindtap="onTap">
+    <view class="game__top">
+      <text class="t-mono t-faint t-sm" wx:if="{{timeLabel}}">{{timeLabel}}</text>
+      <text class="t-dim t-sm quit" catchtap="onQuit">离开</text>
+    </view>
+
+    <scroll-view
+      class="stream"
+      scroll-y
+      scroll-with-animation
+      scroll-into-view="line-{{shown.length - 1}}"
+    >
+      <view class="stream__inner">
+        <view
+          wx:for="{{shown}}"
+          wx:key="index"
+          id="line-{{index}}"
+          class="line float-up"
+        >
+          <block wx:if="{{item.isSystem}}">
+            <view class="line__system t-mono">{{item.text}}</view>
+          </block>
+          <block wx:elif="{{item.isNarrator}}">
+            <view class="line__narrator">{{item.text}}</view>
+          </block>
+          <block wx:elif="{{item.isMe}}">
+            <view class="bubble bubble--me">{{item.text}}</view>
+          </block>
+          <block wx:else>
+            <view class="bubble" style="border-left-color:{{item.color}}">
+              <view class="bubble__name t-sm" style="color:{{item.color}}">{{item.name}}</view>
+              <view class="bubble__text">{{item.text}}</view>
+            </view>
+          </block>
+        </view>
+        <view class="pad"></view>
+      </view>
+    </scroll-view>
+
+    <view class="choices" wx:if="{{finished && choices.length > 0}}">
+      <button
+        wx:for="{{choices}}"
+        wx:key="index"
+        class="btn choice fade-in"
+        data-i="{{item.index}}"
+        catchtap="onChoose"
+      >{{item.text}}</button>
+    </view>
+
+    <view class="hint" wx:if="{{!finished}}">
+      <text class="t-dim t-sm">点击继续</text>
+    </view>
+  </view>
+</view>

@@ -1,0 +1,147 @@
+page {
+  --bg: #0e1116;
+  --bg-elev: #161b22;
+  --bg-dialog: rgba(22, 27, 34, 0.92);
+  --line: #262d38;
+  --text: #e6e9ef;
+  /* 深色背景下的对比度下限：dim 用于次要文字，faint 仅用于装饰性编号 */
+  --text-dim: #a3adb9;
+  --text-faint: #838d9b;
+  --accent: #7b9bb8;
+  --accent-soft: rgba(123, 155, 184, 0.14);
+  --warn: #c8503c;
+  --warn-soft: rgba(200, 80, 60, 0.12);
+
+  background: var(--bg);
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Helvetica Neue', sans-serif;
+  font-size: 30rpx;
+  line-height: 1.7;
+}
+
+view,
+text,
+button,
+input {
+  box-sizing: border-box;
+}
+
+.container {
+  min-height: 100vh;
+  padding: 40rpx 36rpx;
+}
+
+/* ===== 通用文字 ===== */
+.t-dim {
+  color: var(--text-dim);
+}
+
+.t-faint {
+  color: var(--text-faint);
+}
+
+.t-mono {
+  font-family: 'SF Mono', 'Courier New', monospace;
+  letter-spacing: 1rpx;
+}
+
+.t-sm {
+  font-size: 24rpx;
+}
+
+.t-lg {
+  font-size: 40rpx;
+}
+
+.t-xl {
+  font-size: 56rpx;
+  font-weight: 600;
+}
+
+/* ===== 分隔线 ===== */
+.hr {
+  height: 1rpx;
+  background: var(--line);
+  margin: 32rpx 0;
+}
+
+/* ===== 按钮 ===== */
+.btn {
+  width: 100%;
+  padding: 30rpx 32rpx;
+  background: var(--bg-elev);
+  border: 1rpx solid var(--line);
+  border-radius: 6rpx;
+  color: var(--text);
+  font-size: 30rpx;
+  line-height: 1.6;
+  text-align: left;
+  transition: background 0.18s ease, border-color 0.18s ease;
+}
+
+/* 按钮内的弱化文字：保留层次，但使用提亮后的变量，保证深色背景可读 */
+.btn .t-dim {
+  color: var(--text-dim);
+}
+
+.btn .t-faint {
+  color: var(--text-faint);
+}
+
+.btn::after {
+  border: none;
+}
+
+.btn--hover {
+  background: var(--accent-soft);
+  border-color: var(--accent);
+}
+
+.btn--primary {
+  background: var(--text);
+  color: var(--bg);
+  border-color: var(--text);
+  text-align: center;
+  font-weight: 600;
+}
+
+.btn--ghost {
+  background: transparent;
+  text-align: center;
+  color: var(--text-dim);
+}
+
+.btn:disabled {
+  opacity: 0.4;
+}
+
+/* ===== 淡入动画 ===== */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(12rpx);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-in {
+  animation: fadeIn 0.24s ease both;
+}
+
+@keyframes floatUp {
+  from {
+    opacity: 0;
+    transform: translateY(20rpx);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.float-up {
+  animation: floatUp 0.3s ease both;
+}

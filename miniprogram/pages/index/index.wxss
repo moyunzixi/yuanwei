@@ -1,0 +1,88 @@
+.page {
+  min-height: 100vh;
+  position: relative;
+  overflow: hidden;
+}
+
+.page__bg {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.page__mask {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    180deg,
+    rgba(11, 14, 19, 0.9) 0%,
+    rgba(11, 14, 19, 0.94) 50%,
+    rgba(11, 14, 19, 0.99) 100%
+  );
+}
+
+.page__content {
+  position: relative;
+  z-index: 2;
+  min-height: 100vh;
+  padding: 120rpx 48rpx 60rpx;
+  display: flex;
+  flex-direction: column;
+}
+
+.brand {
+  margin-bottom: 40rpx;
+}
+
+.brand__no {
+  font-size: 26rpx;
+  color: var(--text-dim);
+  letter-spacing: 6rpx;
+}
+
+.brand__name {
+  font-size: 84rpx;
+  font-weight: 700;
+  letter-spacing: 10rpx;
+  margin: 12rpx 0 8rpx;
+}
+
+.brand__sub {
+  font-size: 26rpx;
+  letter-spacing: 2rpx;
+}
+
+.notice {
+  padding: 28rpx 32rpx;
+  background: rgba(22, 27, 34, 0.72);
+  border-left: 4rpx solid var(--accent);
+  border-radius: 4rpx;
+  margin-bottom: 60rpx;
+}
+
+.notice__line {
+  line-height: 1.9;
+  font-size: 27rpx;
+  color: var(--text);
+}
+
+.actions {
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 20rpx;
+}
+
+.actions .btn {
+  text-align: center;
+  background: rgba(22, 27, 34, 0.9);
+}
+
+.actions .btn--primary {
+  margin-bottom: 12rpx;
+}

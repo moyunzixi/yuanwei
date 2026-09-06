@@ -1,0 +1,32 @@
+<view class="page">
+  <view class="head">
+    <view class="t-mono t-faint t-sm">ABOUT</view>
+    <view class="title">关于</view>
+  </view>
+
+  <view class="sec">
+    <view class="sec__title">这是什么</view>
+    <view class="p">《检茶员》是一款完全本地运行的互动阅读作品。你进入一段虚构关系，做出选择，故事根据你的选择推进。</view>
+    <view class="p">全部内容在设备本地运算，不上传任何数据，无需网络，没有账号。</view>
+  </view>
+
+  <view class="sec warn">
+    <view class="sec__title">重要说明</view>
+    <view class="p">本作品是<text class="strong">娱乐性互动推演</text>，不是心理测评，不构成任何心理学结论，也不能用于判断真实关系。</view>
+    <view class="p">所有人物、情节均为虚构，与现实中的任何人无关。人物的行为逻辑参考了公开发表的心理学研究，但游戏中的测量方式并非标准化量表。</view>
+  </view>
+
+  <view class="sec">
+    <view class="sec__title">参考的研究方向</view>
+    <view wx:for="{{refs}}" wx:key="group" class="ref">
+      <view class="ref__group">{{item.group}}</view>
+      <view wx:for="{{item.items}}" wx:for-item="r" wx:key="*this" class="ref__item t-dim t-sm">{{r}}</view>
+    </view>
+    <view class="t-dim t-sm mt">以上仅为本作品的设计参考，不代表这些研究支持或参与本作品的任何结论。</view>
+  </view>
+
+  <view class="sec">
+    <view class="sec__title">数据</view>
+    <view class="p t-dim t-sm">进度与历史记录保存在本机微信小程序的本地存储中。清除小程序数据会一并删除。</view>
+  </view>
+</view>

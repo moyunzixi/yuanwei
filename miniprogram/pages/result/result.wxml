@@ -1,0 +1,119 @@
+<view class="page">
+  <!-- ===== 阶段一：揭晓 ===== -->
+  <block wx:if="{{stage === 0}}">
+    <view class="reveal" bindtap="onRevealDone">
+      <view class="reveal__no t-mono t-faint">CASE 027</view>
+      <view class="reveal__line fade-in">好了，摊牌。</view>
+      <view class="reveal__line fade-in">这七天你以为你是来检查别人的。</view>
+      <view class="reveal__line fade-in">其实我一直在看你。</view>
+      <view class="reveal__you t-mono fade-in">你是 CASE 027。</view>
+      <view class="reveal__hint t-dim t-sm">点击查看你的档案</view>
+    </view>
+  </block>
+
+  <!-- ===== 阶段二：报告 ===== -->
+  <block wx:else>
+    <scroll-view class="report" scroll-y>
+      <!-- 段位 -->
+      <view class="sec fade-in">
+        <view class="sec__no t-mono t-faint t-sm">RELATIONSHIP ANALYSIS</view>
+        <view class="index-row">
+          <view class="index-num">{{rd.index}}</view>
+          <view class="index-meta">
+            <view class="rank">{{rd.rankName}}</view>
+            <view class="t-dim t-sm">{{rd.rankLine}}</view>
+          </view>
+        </view>
+        <view class="t-dim t-sm mt">关系边界指数 · 共记录 {{rd.stats.totalChoices}} 次选择</view>
+      </view>
+
+      <!-- 雷达 -->
+      <view class="sec">
+        <canvas id="radar" type="2d" class="radar" style="width:100%;height:520rpx;"></canvas>
+      </view>
+
+      <!-- 维度明细 -->
+      <view class="sec">
+        <view class="sec__title">各项明细</view>
+        <view
+          wx:for="{{rd.dimensions}}"
+          wx:key="key"
+          class="dim"
+          data-k="{{item.key}}"
+          bindtap="onScience"
+        >
+          <view class="dim__label">{{item.label}}</view>
+          <view class="dim__bar">
+            <view class="dim__fill" style="width:{{item.value}}%"></view>
+          </view>
+          <view class="dim__val t-mono">{{item.value}}</view>
+        </view>
+        <view class="t-dim t-sm mt">（点一下维度名，看看它在测什么）</view>
+      </view>
+
+      <!-- 行为回放 -->
+      <view class="sec" wx:if="{{rd.replay.length > 0}}">
+        <view class="sec__title">来，回顾一下你的高光时刻</view>
+        <view wx:for="{{rd.replay}}" wx:key="label" class="replay">
+          <view class="replay__label t-mono t-sm">{{item.time}}{{item.label}}</view>
+          <view class="replay__text">{{item.text}}</view>
+        </view>
+      </view>
+
+      <!-- 模式 -->
+      <view class="sec" wx:if="{{rd.patterns.length > 0}}">
+        <view class="sec__title">你的行为路线</view>
+        <view wx:for="{{rd.patterns}}" wx:key="key" class="pat">· {{item.line}}</view>
+      </view>
+
+      <!-- 合理化 -->
+      <view class="sec" wx:if="{{rd.rationalizationLine}}">
+        <view class="sec__title">你对自己说过的话</view>
+        <view class="pat">{{rd.rationalizationLine}}</view>
+      </view>
+
+      <!-- 依恋象限 -->
+      <view class="sec">
+        <view class="sec__title">你更像剧本里的谁</view>
+        <view class="quad">
+          <view class="quad__name">{{rd.quadrant.headline}}</view>
+          <view class="quad__line">{{rd.quadrant.line}}</view>
+          <view class="t-dim t-sm mt">{{rd.quadrant.diff}}</view>
+          <view class="t-dim t-sm mt">{{notFate}}</view>
+          <view class="btn btn--ghost mt" bindtap="onInsight">她到底怎么回事？</view>
+        </view>
+        <view class="hr"></view>
+        <view wx:for="{{rd.matches}}" wx:key="id" class="match">
+          <view class="match__name">{{item.name}}</view>
+          <view class="match__bar">
+            <view class="match__fill" style="width:{{item.sim}}%"></view>
+          </view>
+          <view class="match__val t-mono">{{item.sim}}%</view>
+        </view>
+      </view>
+
+      <!-- 结局 -->
+      <view class="sec" wx:if="{{ending}}">
+        <view class="sec__no t-mono t-faint t-sm">{{ending.subtitle}}</view>
+        <view class="sec__title">{{ending.name}}</view>
+        <view wx:for="{{ending.text}}" wx:key="index" class="ending-line">{{item}}</view>
+        <view class="cost">
+          <view class="t-sm">代价</view>
+          <view class="t-dim t-sm">{{ending.cost}}</view>
+        </view>
+        <view class="pat mt">{{ending.note}}</view>
+      </view>
+
+      <!-- 收尾 -->
+      <view class="sec closing">
+        <view wx:for="{{closing}}" wx:key="index" class="closing__line">{{item}}</view>
+      </view>
+
+      <view class="disclaimer t-dim t-sm">{{disclaimer}}</view>
+
+      <view class="foot">
+        <button class="btn btn--primary" bindtap="onBackHome">回到档案柜</button>
+      </view>
+    </scroll-view>
+  </block>
+</view>

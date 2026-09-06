@@ -1,0 +1,43 @@
+<view class="page">
+  <!-- Step 1 · 性别 -->
+  <block wx:if="{{step === 0}}">
+    <view class="head fade-in">
+      <view class="t-mono t-faint t-sm">STEP 01 / 02</view>
+      <view class="q">你是？</view>
+    </view>
+    <view class="opts">
+      <button class="btn" data-v="m" bindtap="onGender">男</button>
+      <button class="btn" data-v="f" bindtap="onGender">女</button>
+    </view>
+  </block>
+
+  <!-- Step 2 · 关系现状 -->
+  <block wx:else>
+    <view class="head fade-in">
+      <view class="t-mono t-faint t-sm">STEP 02 / 02</view>
+      <view class="q">你和许念，最近怎么样？</view>
+      <view class="t-dim t-sm">相恋三年，同居。这周她出差。</view>
+    </view>
+    <view class="opts">
+      <button
+        wx:for="{{relations}}"
+        wx:key="key"
+        class="btn {{relation === item.key ? 'btn--hover' : ''}}"
+        data-v="{{item.key}}"
+        bindtap="onRelation"
+      >
+        <view class="opt__title">{{item.title}}</view>
+        <view class="opt__desc t-dim t-sm">{{item.desc}}</view>
+      </button>
+    </view>
+
+    <view class="foot">
+      <button class="btn btn--ghost" bindtap="onBack">上一步</button>
+      <button
+        class="btn btn--primary"
+        disabled="{{!relation}}"
+        bindtap="onStart"
+      >开始第七夜</button>
+    </view>
+  </block>
+</view>

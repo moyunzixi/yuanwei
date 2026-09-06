@@ -1,0 +1,144 @@
+.game {
+  min-height: 100vh;
+  position: relative;
+  overflow: hidden;
+}
+
+.game__bg {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* 遮罩：保证文字在任何背景上都可读 */
+.game__mask {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    180deg,
+    rgba(11, 14, 19, 0.82) 0%,
+    rgba(11, 14, 19, 0.62) 34%,
+    rgba(11, 14, 19, 0.88) 72%,
+    rgba(11, 14, 19, 0.98) 100%
+  );
+}
+
+/* 角色立绘：底部居中，半身 */
+.game__char {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  width: 78%;
+  height: 62%;
+  transform: translateX(-50%) translateY(24rpx);
+  opacity: 0;
+  transition: opacity 0.4s ease, transform 0.4s ease;
+  z-index: 1;
+}
+
+.game__char--in {
+  opacity: 0.9;
+  transform: translateX(-50%) translateY(0);
+}
+
+.game__layer {
+  position: relative;
+  z-index: 2;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.game__top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24rpx 36rpx 8rpx;
+}
+
+.quit {
+  padding: 8rpx 16rpx;
+}
+
+.stream {
+  flex: 1;
+  padding: 0 36rpx;
+  max-height: 58vh;
+}
+
+.stream__inner {
+  padding-bottom: 20rpx;
+}
+
+.line {
+  margin-bottom: 28rpx;
+}
+
+.line__narrator {
+  color: #b9c1cd;
+  font-size: 29rpx;
+  line-height: 1.9;
+  padding: 4rpx 0;
+  text-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.8);
+}
+
+.line__system {
+  color: var(--accent);
+  font-size: 26rpx;
+  letter-spacing: 2rpx;
+  padding: 20rpx 0;
+  border-bottom: 1rpx solid var(--line);
+  margin-bottom: 12rpx;
+}
+
+.bubble {
+  background: rgba(16, 20, 26, 0.9);
+  border-left: 4rpx solid var(--accent);
+  border-radius: 4rpx;
+  padding: 20rpx 26rpx;
+  max-width: 82%;
+}
+
+.bubble--me {
+  margin-left: auto;
+  background: rgba(123, 155, 184, 0.2);
+  border-left-color: transparent;
+  border-right: 4rpx solid var(--accent);
+}
+
+.bubble__name {
+  margin-bottom: 6rpx;
+  font-weight: 600;
+}
+
+.bubble__text {
+  line-height: 1.7;
+}
+
+.choices {
+  padding: 20rpx 36rpx 40rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 18rpx;
+  background: linear-gradient(180deg, rgba(11, 14, 19, 0) 0%, rgba(11, 14, 19, 0.97) 26%);
+}
+
+.choice {
+  text-align: left;
+  line-height: 1.6;
+  background: rgba(22, 27, 34, 0.94);
+}
+
+.hint {
+  text-align: center;
+  padding: 30rpx 0 46rpx;
+}
+
+.pad {
+  height: 20rpx;
+}

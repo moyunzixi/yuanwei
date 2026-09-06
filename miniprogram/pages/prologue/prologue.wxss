@@ -1,0 +1,40 @@
+.page {
+  min-height: 100vh;
+  padding: 100rpx 48rpx 60rpx;
+  display: flex;
+  flex-direction: column;
+}
+
+.head {
+  margin-bottom: 56rpx;
+}
+
+.q {
+  font-size: 48rpx;
+  font-weight: 600;
+  margin: 16rpx 0 12rpx;
+}
+
+.opts {
+  display: flex;
+  flex-direction: column;
+  gap: 20rpx;
+}
+
+.opt__title {
+  font-size: 32rpx;
+  font-weight: 600;
+  margin-bottom: 6rpx;
+}
+
+.opt__desc {
+  line-height: 1.6;
+}
+
+.foot {
+  margin-top: auto;
+  padding-top: 60rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 20rpx;
+}
