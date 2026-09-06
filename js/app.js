@@ -268,6 +268,10 @@
       view.querySelector('.quit').addEventListener('click', () => {
         if (confirm('离开这段关系？当前进度会保留。')) location.hash = '#/'
       })
+      view.querySelector('.stream').addEventListener('click', () => {
+        if (game.finished) return
+        step()
+      })
     }
 
     let save = storage.load()
