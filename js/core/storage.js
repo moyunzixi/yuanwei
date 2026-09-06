@@ -76,7 +76,7 @@
   }
 
   const api = {
-    SAVE_VERSION, init, save, load, clearSave, hasSave,
+    SAVE_VERSION, init, save, persist: save, load, clearSave, hasSave,
     addHistory, getHistory, clearHistory, getSettings, setSettings
   }
   root.LS = root.LS || {}

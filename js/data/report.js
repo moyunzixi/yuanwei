@@ -194,6 +194,31 @@ const closing = [
 
 const notFate = '类型不是判决，它只是你现在的习惯。'
 
+// 参考的研究方向（关于页展示）
+const refs = [
+  {
+    group: '依恋理论',
+    items: [
+      'Bowlby, J. (1969). Attachment and Loss. New York: Basic Books.',
+      'Brennan, K. A., Clark, C. L., & Shaver, P. R. (1998). Self-report measurement of adult attachment.'
+    ]
+  },
+  {
+    group: '亲密关系与隐瞒',
+    items: [
+      'Afifi, W. A., & Steuber, K. (2010). The cycle of concealment in families.',
+      'Vangelisti, A. L., & Gerstenberger, M. (2004). Communication and social support in infidelity.'
+    ]
+  },
+  {
+    group: '认知失调与自我合理化',
+    items: [
+      'Festinger, L. (1957). A Theory of Cognitive Dissonance. Stanford University Press.',
+      'Baumeister, R. F. (1991). Escaping the Self.'
+    ]
+  }
+]
+
 LS.report = {
   dimensions,
   ranks,
@@ -202,6 +227,7 @@ LS.report = {
   patternLines,
   insightLines,
   rationalizationLine,
+  refs,
   disclaimer,
   closing,
   notFate

@@ -223,12 +223,15 @@
       ).join('')
       $$('[data-i]', box).forEach(b => b.addEventListener('click', () => {
         game.save = engine.choose(game.save, Number(b.getAttribute('data-i')))
+        storage.save(game.save)
         gameRender()
       }))
     } else {
       box.innerHTML = ''
     }
-    view.querySelector('.hint').style.display = game.finished ? 'none' : 'block'
+    const hasVis = (game.node && game.node.choices) ? engine.visibleChoices(game.save, game.node).length > 0 : false
+    const needContinue = game.finished && !hasVis && !!(game.node && game.node.next)
+    view.querySelector('.hint').style.display = (game.finished && !needContinue) ? 'none' : 'block'
   }
 
   function step() {
@@ -269,7 +272,16 @@
         if (confirm('离开这段关系？当前进度会保留。')) location.hash = '#/'
       })
       view.querySelector('.stream').addEventListener('click', () => {
-        if (game.finished) return
+        if (game.finished) {
+          const vis = (game.node && game.node.choices) ? engine.visibleChoices(game.save, game.node) : []
+          if (vis.length) return
+          if (game.node && game.node.next) {
+            game.save = engine.advance(game.save)
+            storage.save(game.save)
+            gameRender()
+          }
+          return
+        }
         step()
       })
     }
