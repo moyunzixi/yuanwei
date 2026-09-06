@@ -35,7 +35,6 @@
       flags: [],
       seen: [],
       log: [],
-      selectedChoices: {},
       playthrough: 1
     }
   }
@@ -45,10 +44,8 @@
 
   function visibleChoices(save, node) {
     if (!node || !Array.isArray(node.choices)) return []
-    const selected = (save.selectedChoices && save.selectedChoices[node.id]) || []
     return node.choices
       .map((choice, index) => ({ choice, index }))
-      .filter(item => selected.indexOf(item.index) < 0)
       .filter(item => expr.evaluate(item.choice.visible_if, save))
   }
 
@@ -131,8 +128,6 @@
       delta: choice.effects || null,
       ts: Date.now()
     }])
-    next.selectedChoices = Object.assign({}, next.selectedChoices || {})
-    next.selectedChoices[node.id] = (next.selectedChoices[node.id] || []).concat([choiceIndex])
     next.attach = attrs.inferAttachment(next.log)
     const nextId = resolveNext(next, choice)
     if (nextId) next = enterNode(next, nextId)

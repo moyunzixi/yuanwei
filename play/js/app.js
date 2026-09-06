@@ -200,11 +200,6 @@
           '<button class="btn" data-rel="plain">平淡稳定</button>' +
           '<button class="btn" data-rel="tired">已经有些疲惫</button>' +
         '</div>' +
-        '<div style="margin-top:20px">' +
-          '<label class="t-dim t-sm">给自己取个代号（可以不填）</label>' +
-          '<input id="nickname-input" type="text" maxlength="10" placeholder="检茶员" ' +
-            'style="width:100%;margin-top:6px;padding:10px 12px;border:1px solid var(--line);border-radius:8px;font-size:16px;background:var(--bg-elev);color:var(--text);outline:none" />' +
-        '</div>' +
         '<div class="prologue__next btn btn--primary" data-act="start">进入档案</div>' +
       '</div>'
 
@@ -224,8 +219,6 @@
       location.hash = '#/game'
     })
     view.querySelector('[data-act="start"]').addEventListener('click', () => {
-      const nameInput = document.getElementById('nickname-input')
-      if (nameInput) setup.name = nameInput.value.trim()
       storage.clearSave()
       const save = engine.createSave(setup)
       storage.save(save)
@@ -246,12 +239,9 @@
   function decorate(raw) {
     const who = raw.who || 'narrator'
     const text = gswap(raw.text)
-    // 如果玩家填了昵称，在终局时将 "CASE 027" 替换为昵称
-    const pname = game && game.save && game.save.player && game.save.player.name
-    const finalText = pname ? text.replace(/CASE 027/g, pname) : text
-    if (who === 'narrator') return { isNarrator: true, text: finalText }
-    if (who === 'system') return { isSystem: true, text: finalText }
-    if (who === 'me') return { isMe: true, text: finalText }
+    if (who === 'narrator') return { isNarrator: true, text: text }
+    if (who === 'system') return { isSystem: true, text: text }
+    if (who === 'me') return { isMe: true, text: text }
     const c = characters[who]
     return {
       isNarrator: false,
@@ -301,26 +291,13 @@
       ).join('')
       $$('[data-i]', box).forEach(b => b.addEventListener('click', () => {
         if (b.classList.contains('is-picked')) return
-        b.classList.add('is-picked')
+        b.classList.add('is-picked') // 选中：放大 + 变色，略微停顿后再推进
         const idx = Number(b.getAttribute('data-i'))
-        const choice = list.find(x => x.index === idx)
-        if (choice) {
-          // 选项文字作为「我」的消息插入聊天框，然后等待用户点击继续
-          game.shown.push({ isMe: true, text: gswap(choice.choice.text) })
-          renderStream()
-          game.pendingChoice = idx
-          game.finished = false
-          box.innerHTML = ''
-          view.querySelector('.hint').style.display = 'block'
-          const sb = view.querySelector('.game__stream')
-          if (sb) requestAnimationFrame(() => stickBottom(sb, true))
-        } else {
-          setTimeout(() => {
-            game.save = engine.choose(game.save, idx)
-            storage.save(game.save)
-            gameRender()
-          }, 260)
-        }
+        setTimeout(() => {
+          game.save = engine.choose(game.save, idx)
+          storage.save(game.save)
+          gameRender()
+        }, 260)
       }))
     } else {
       box.innerHTML = ''
@@ -328,33 +305,25 @@
     const hasVis = (game.node && game.node.choices) ? engine.visibleChoices(game.save, game.node).length > 0 : false
     const needContinue = game.finished && !hasVis && !!(game.node && game.node.next)
     view.querySelector('.hint').style.display = (game.finished && !needContinue) ? 'none' : 'block'
-    // 选项框出现后，强制把最后一条聊天记录滚到选项框正上方
-    // （flex 布局下 stream 高度已自动减去选项框，滚到底即贴着选项框上沿）
+    // 选项框出现后把对话区粘到底部，避免最后几行被选项框压住
     const sb = view.querySelector('.game__stream')
-    if (sb) {
-      requestAnimationFrame(() => requestAnimationFrame(() => stickBottom(sb, true)))
-      // 选项框内文字/字体到位后高度可能再变化，补一次兜底
-      setTimeout(() => stickBottom(sb, true), 90)
-    }
+    if (sb) requestAnimationFrame(() => stickBottom(sb))
   }
 
-  // 把对话区滚到最底（最后一条聊天记录恰好落在选项框正上方）
-  // force=true 时无视"接近底部"判断，用于选项框出现时——此时 flex 已把
-  // 选项框高度从 stream 里扣除，滚到底即"最后一条记录贴着选项框上沿"。
-  function stickBottom(box, force) {
+  // 尊重用户向上回看：仅当接近底部时才自动滚到底
+  function stickBottom(box) {
     if (!box) return
-    const nearBottom = force || (box.scrollHeight - box.scrollTop - box.clientHeight < 90)
+    const nearBottom = box.scrollHeight - box.scrollTop - box.clientHeight < 90
     if (nearBottom) box.scrollTop = box.scrollHeight
   }
 
   function step() {
-    if (game.pendingChoice != null) return
     if (game.cursor >= game.allLines.length) { revealChoices(); return }
     const raw = game.allLines[game.cursor++]
     const item = decorate(raw)
     game.shown.push(item)
     renderStream()
-    if (game.cursor >= game.allLines.length && game.pendingChoice == null) revealChoices()
+    if (game.cursor >= game.allLines.length) revealChoices()
   }
 
   function revealChoices() {
@@ -362,16 +331,8 @@
     renderChoices()
   }
 
-  // 点击「继续」：推进一行；或执行待定选择后进入下一节点
+  // 点击「继续」：推进一行；或（叙事续节点）前进到下一节点
   function advance() {
-    if (game.pendingChoice != null) {
-      const idx = game.pendingChoice
-      game.pendingChoice = null
-      game.save = engine.choose(game.save, idx)
-      storage.save(game.save)
-      gameRender()
-      return
-    }
     if (game.finished) {
       const vis = (game.node && game.node.choices) ? engine.visibleChoices(game.save, game.node) : []
       if (vis.length) return
@@ -417,7 +378,6 @@
     }
     game = game || {}
     game.save = save
-    game.pendingChoice = null
 
     // 自动推进无文本/无选项的 branch 节点
     let guard = 0
@@ -454,8 +414,7 @@
     storage.addHistory({
       index: rd.index, rank: rd.rankName, ending: endingId,
       endingName: endings[endingId] ? endings[endingId].name : '',
-      quadrant: rd.quadrantKey,
-      saveData: save
+      quadrant: rd.quadrantKey
     })
     const finished = Object.assign({}, save, { finished: true })
     storage.save(finished)
@@ -498,7 +457,7 @@
 
     view.innerHTML =
       '<div class="reveal" data-stage="0">' +
-        '<div class="reveal__no">' + esc(save.player && save.player.name ? save.player.name : 'CASE 027') + '</div>' +
+        '<div class="reveal__no">CASE 027</div>' +
         '<div class="reveal__line fade-in">八周，结束了。</div>' +
         '<div class="reveal__line fade-in">这一回，被检的不只是他们。</div>' +
         '<div class="reveal__you">你也在这份档案里。</div>' +
@@ -608,7 +567,6 @@
     const seen = getDeletedSeen()
     const unlockedCount = records.filter(r => !r.locked).length
     const su0 = records.filter(r => !r.locked && seen.indexOf(r.id) >= 0).length
-    const lockedCount = records.length - unlockedCount
 
     const lineNarr = (t) => '<div class="msg msg--narr"><div class="msg__text">' + esc(gswap(t)) + '</div></div>'
     const lineSys = (t) => '<div class="msg msg--sys"><span>' + esc(gswap(t)) + '</span></div>'
@@ -662,64 +620,10 @@
     ) : ''
 
     const allSeen = unlockedCount > 0 && su0 >= unlockedCount
-    const progressTxt = '收集完成度：' + unlockedCount + ' / ' + records.length
+    const progressTxt = '收集完成度：' + su0 + ' / ' + unlockedCount + '（共 ' + records.length + ' 条）'
     const seenHtml = allSeen
       ? (data.outro.allDone || []).map(l => l.who === 'system' ? lineSys(l.text) : lineNarr(l.text)).join('')
       : ''
-
-    // Cross 分区
-    const crossData = LS.archive
-    const crossExpr = LS.expr
-    let crossHtml = ''
-    if (crossData && crossData.records) {
-      const crossRecords = (crossData.records || []).map(r => {
-        const locked = r.unlock ? !crossExpr.evaluate(r.unlock, save) : false
-        return Object.assign({}, r, { locked: !!locked })
-      })
-      const crossUnlocked = crossRecords.filter(r => !r.locked).length
-      const crossTotal = crossRecords.length
-      const unknown = crossData.unknown || null
-      const unknownLocked = unknown && unknown.unlock ? !crossExpr.evaluate(unknown.unlock, save) : true
-
-      const crossCards = crossRecords.map(r => {
-        if (r.locked) {
-          return '<div class="dcard dcard--lock">' +
-            '<div class="dcard__head"><div class="dcard__avatar dcard__avatar--lock">?</div>' +
-            '<div><div class="dcard__name">CROSS-??</div><div class="dcard__meta">这一页没有留下来。</div></div></div>' +
-          '</div>'
-        }
-        return '<div class="dcard" data-id="cross-' + r.id + '">' +
-          '<div class="dcard__head">' +
-            '<div class="dcard__avatar dcard__avatar--lock" style="background:var(--accent);color:#fff;font-size:16px">C</div>' +
-            '<div><div class="dcard__name">' + esc(r.id) + ' · ' + esc(r.title) + '</div>' +
-            '<div class="dcard__meta">' + esc(r.time) + '</div></div>' +
-            '<div class="dcard__chev">▾</div>' +
-          '</div>' +
-          '<div class="dcard__edit" style="display:none">' +
-            r.text.map(t => '<div class="dcard__narr">' + esc(t) + '</div>').join('') +
-          '</div>' +
-        '</div>'
-      }).join('')
-
-      const unknownHtml = unknown && !unknownLocked ? (
-        '<div class="dfinal" data-id="' + unknown.id + '">' +
-          '<div class="dfinal__head"><div class="dfinal__title">' + esc(unknown.id) + '</div></div>' +
-          unknown.text.map(t => {
-            if (t === '——') return '<div class="hr"></div>'
-            return '<div class="ending-line">' + esc(t) + '</div>'
-          }).join('') +
-        '</div>'
-      ) : ''
-
-      crossHtml =
-        '<div class="deleted__head" style="margin-top:32px">' +
-          '<div class="deleted__title">Cross</div>' +
-          '<div class="deleted__sub">特殊记录 · 记录你做过的事</div>' +
-        '</div>' +
-        '<div class="deleted__list">' + crossCards + '</div>' +
-        unknownHtml +
-        '<div class="msg msg--sys"><span>已记录 ' + crossUnlocked + ' / ' + crossTotal + '</span></div>'
-    }
 
     view.innerHTML =
       '<div class="deleted">' +
@@ -735,9 +639,6 @@
           (data.systemIntro || []).map(t => lineSys(t)).join('') +
           '<div class="deleted__list">' + cardsHtml + '</div>' +
           finalHtml +
-          // Cross 分区
-          crossHtml +
-          '<div class="hr"></div>' +
           '<div class="deleted__outro">' +
             lineSys('「' + data.title + '」' + progressTxt) +
             seenHtml +
@@ -779,7 +680,7 @@
         const seen2 = getDeletedSeen()
         const su = records.filter(r => !r.locked && seen2.indexOf(r.id) >= 0).length
         const prog = view.querySelector('.deleted__outro .msg--sys span')
-        if (prog) prog.textContent = '「' + data.title + '」收集完成度：' + unlockedCount + ' / ' + records.length
+        if (prog) prog.textContent = '「' + data.title + '」收集完成度：' + su + ' / ' + unlockedCount + '（共 ' + records.length + ' 条）'
         if (su >= unlockedCount && !view.querySelector('.deleted__alldone')) {
           const wrap = document.createElement('div')
           wrap.className = 'deleted__alldone'
@@ -795,10 +696,9 @@
 
     const replayBtn = view.querySelector('[data-act="replay"]')
     if (replayBtn) replayBtn.addEventListener('click', replayAll)
-    $$('[data-act="home"]', view).forEach(b => b.addEventListener('click', () => { history.back() }))
+    view.querySelector('[data-act="home"]').addEventListener('click', () => { location.hash = '#/' })
   }
 
-  // ============ Cross · 特殊记录 ============
   function drawRadar(dimensions) {
     if (radarDrawn) return
     const canvas = $('#radar')
@@ -870,8 +770,8 @@
       const p = n => (n < 10 ? '0' + n : '' + n)
       return p(d.getMonth() + 1) + '/' + p(d.getDate()) + ' ' + p(d.getHours()) + ':' + p(d.getMinutes())
     }
-    const cards = list.length ? list.map((item, i) =>
-      '<div class="card" data-history="' + i + '" style="cursor:pointer"><div class="no">CASE · ' + fmt(item.createdAt) + '</div>' +
+    const cards = list.length ? list.map(item =>
+      '<div class="card"><div class="no">CASE · ' + fmt(item.createdAt) + '</div>' +
       '<div class="row"><div class="idx">' + item.index + '</div><div class="card__meta">' +
       '<div class="rank">' + esc(item.rank) + '</div>' +
       '<div class="t-dim t-sm">' + esc(item.endingName) + ' · ' + (QUAD[item.quadrant] || '') + '</div></div></div></div>'
@@ -889,14 +789,6 @@
           storage.clearHistory(); renderHistory()
         }
       })
-      $$('[data-history]', view).forEach(card => card.addEventListener('click', () => {
-        const i = Number(card.getAttribute('data-history'))
-        const entry = list[i]
-        if (entry && entry.saveData) {
-          storage.save(entry.saveData)
-        }
-        location.hash = '#/result?ending=' + entry.ending
-      }))
     }
     view.querySelector('[data-act="home"]').addEventListener('click', () => { location.hash = '#/' })
   }

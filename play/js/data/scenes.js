@@ -3749,11 +3749,11 @@ LS.scenes = {
       { who: 'shenyan', text: '但你现在有女朋友。所以先把自己的事情处理好。' }
     ],
     choices: [
-      { text: '「我知道了。」', mech: 'voice_boundary', next: 'n032' },
-      { text: '「你是不是也在等我处理好？」', mech: 'exit_escalate', npcEffects: { shenyan: { affection: 3 } }, next: 'n032' },
-      { text: '「对不起。」', mech: 'voice_express', next: 'n032' }
+      { text: '「我知道了。」', mech: 'voice_boundary', next: 'n031' },
+      { text: '「你是不是也在等我处理好？」', mech: 'exit_escalate', npcEffects: { shenyan: { affection: 3 } }, next: 'n031' },
+      { text: '「对不起。」', mech: 'voice_express', next: 'n031' }
     ],
-    next: 'n032'
+    next: 'n031'
   },
 
   n033s: {
@@ -4296,11 +4296,11 @@ LS.scenes = {
       { who: 'zhouran', text: '我只是……不想让那十一月变成一件我自己编出来的事。' }
     ],
     choices: [
-      { text: '「我记得。」', mech: 'voice_express', next: 'n032' },
-      { text: '「那十一月是真的。」', mech: 'exit_escalate', npcEffects: { zhouran: { affection: 4 } }, next: 'n032' },
-      { text: '「你不用再确认了。」', mech: 'voice_boundary', next: 'n032' }
+      { text: '「我记得。」', mech: 'voice_express', next: 'n031' },
+      { text: '「那十一月是真的。」', mech: 'exit_escalate', npcEffects: { zhouran: { affection: 4 } }, next: 'n031' },
+      { text: '「你不用再确认了。」', mech: 'voice_boundary', next: 'n031' }
     ],
-    next: 'n032'
+    next: 'n031'
   },
 
   n033r: {
