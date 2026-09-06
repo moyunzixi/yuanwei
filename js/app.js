@@ -252,6 +252,21 @@
     renderChoices()
   }
 
+  // 点击「继续」：推进一行；或（叙事续节点）前进到下一节点
+  function advance() {
+    if (game.finished) {
+      const vis = (game.node && game.node.choices) ? engine.visibleChoices(game.save, game.node) : []
+      if (vis.length) return
+      if (game.node && game.node.next) {
+        game.save = engine.advance(game.save)
+        storage.save(game.save)
+        gameRender()
+      }
+      return
+    }
+    step()
+  }
+
   function gameRender() {
     const view = $('#view-game')
     if (!view.querySelector('.game__bg')) {
@@ -260,9 +275,9 @@
           '<img class="game__bg" src="" alt="" />' +
           '<div class="game__mask"></div>' +
           '<img class="game__char" src="" alt="" />' +
-          '<div class="game__layer">' +
-            '<div class="game__top"><span class="time t-mono t-dim t-sm"></span>' +
-              '<span class="quit">离开</span></div>' +
+          '<div class="game__top"><span class="time t-mono t-dim t-sm"></span>' +
+            '<span class="quit">离开</span></div>' +
+          '<div class="game__panel">' +
             '<div class="stream"><div class="stream__inner"></div></div>' +
             '<div class="choices"></div>' +
             '<div class="hint">点击继续</div>' +
@@ -271,18 +286,10 @@
       view.querySelector('.quit').addEventListener('click', () => {
         if (confirm('离开这段关系？当前进度会保留。')) location.hash = '#/'
       })
-      view.querySelector('.stream').addEventListener('click', () => {
-        if (game.finished) {
-          const vis = (game.node && game.node.choices) ? engine.visibleChoices(game.save, game.node) : []
-          if (vis.length) return
-          if (game.node && game.node.next) {
-            game.save = engine.advance(game.save)
-            storage.save(game.save)
-            gameRender()
-          }
-          return
-        }
-        step()
+      // 全屏任意处点击「继续」（选项 / 离开 / 顶部栏等索引键除外）
+      view.querySelector('.game').addEventListener('click', (e) => {
+        if (e.target.closest('.choice, .quit, .game__top')) return
+        advance()
       })
     }
 
