@@ -61,7 +61,7 @@
     radarDrawn = false
     activate(name)
     const fns = {
-      index: renderIndex, prologue: renderPrologue, game: renderGame,
+      index: renderIndex, prologue: renderPrologue, game: gameRender,
       result: renderResult, history: renderHistory, about: renderAbout
     }
     fns[name]()
